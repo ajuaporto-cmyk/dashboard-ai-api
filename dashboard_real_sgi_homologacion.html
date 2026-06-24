@@ -1,0 +1,394 @@
+
+<h2 class="sr-only">Dashboard real de homologación comercial con datos reales de SGI Tradicional (Colombia, Ecuador, Perú), SGI 4.0 Colombia y Merchandising Express Colombia. Incluye KPIs, gráficas de canales, industrias, alertas y comparativo por país.</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+.hdr{padding:.75rem 0 .5rem;border-bottom:.5px solid var(--color-border-tertiary);margin-bottom:.75rem;}
+.hdr-title{font-size:15px;font-weight:500;color:var(--color-text-primary);}
+.hdr-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px;}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.75rem;}
+.fg{display:flex;flex-direction:column;gap:2px;}
+.fg label{font-size:10px;color:var(--color-text-secondary);}
+.fg select{font-size:11px;padding:3px 6px;height:28px;min-width:105px;}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:.75rem;}
+.kpi{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;}
+.kpi-l{font-size:10px;color:var(--color-text-secondary);}
+.kpi-v{font-size:20px;font-weight:500;color:var(--color-text-primary);line-height:1.2;}
+.kpi-d{font-size:10px;margin-top:1px;color:var(--color-text-secondary);}
+.tabs{display:flex;gap:3px;margin-bottom:.75rem;flex-wrap:wrap;}
+.tab{font-size:11px;padding:3px 10px;border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;color:var(--color-text-secondary);background:transparent;}
+.tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px 14px;}
+.card-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;}
+.bar-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11px;}
+.bar-lbl{width:120px;color:var(--color-text-secondary);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}
+.bar-track{flex:1;height:7px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;}
+.bar-n{font-size:10px;color:var(--color-text-secondary);width:42px;text-align:right;flex-shrink:0;}
+.alert-box{border-radius:var(--border-radius-md);padding:7px 9px;margin-bottom:5px;font-size:11px;display:flex;gap:7px;line-height:1.4;}
+.alert-box.danger{background:#FCEBEB;color:#501313;}
+.alert-box.warn{background:#FAEEDA;color:#633806;}
+.alert-box.info{background:#E6F1FB;color:#042C53;}
+.alert-box.success{background:#EAF3DE;color:#173404;}
+.ai{font-size:16px;flex-shrink:0;}
+.tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:500;}
+.t-col{background:#E1F5EE;color:#085041;}
+.t-ecu{background:#FAEEDA;color:#633806;}
+.t-per{background:#EEEDFE;color:#26215C;}
+.t-sgi{background:#E6F1FB;color:#0C447C;}
+.t-40{background:#FAECE7;color:#4A1B0C;}
+.t-me{background:#EAF3DE;color:#173404;}
+.matrix{display:grid;grid-template-columns:90px repeat(3,1fr);gap:2px;font-size:11px;}
+.mc{padding:6px 4px;text-align:center;border-radius:3px;font-size:11px;}
+.mh{color:var(--color-text-secondary);font-size:10px;font-weight:500;display:flex;align-items:center;justify-content:center;}
+.ml{color:var(--color-text-secondary);font-size:10px;display:flex;align-items:center;}
+.ins-btn{width:100%;text-align:left;font-size:11px;padding:7px 10px;border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;background:transparent;color:var(--color-text-primary);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;}
+.ins-btn:hover{background:var(--color-background-secondary);}
+@media(max-width:520px){.grid2,.grid3,.kpis{grid-template-columns:1fr;}}
+</style>
+
+<div class="hdr">
+  <div class="hdr-title"><i class="ti ti-database" aria-hidden="true" style="font-size:14px;vertical-align:-1px;margin-right:5px;"></i>Dashboard de homologación — datos reales</div>
+  <div class="hdr-sub">SGI Tradicional (COL·ECU·PER) &nbsp;·&nbsp; SGI 4.0 (COL) &nbsp;·&nbsp; Merchandising Express (COL) &nbsp;·&nbsp; 289,736 registros</div>
+</div>
+
+<div class="filters">
+  <div class="fg"><label>Línea</label>
+    <select id="f-linea" onchange="render()">
+      <option value="all">Todas</option>
+      <option value="SGI">SGI Tradicional</option>
+      <option value="SGI40">SGI 4.0</option>
+      <option value="ME">Merchandising Express</option>
+    </select>
+  </div>
+  <div class="fg"><label>País</label>
+    <select id="f-pais" onchange="render()">
+      <option value="all">Todos</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Ecuador">Ecuador</option>
+      <option value="Peru">Perú</option>
+    </select>
+  </div>
+  <div class="fg"><label>Canal</label>
+    <select id="f-canal" onchange="render()">
+      <option value="all">Todos</option>
+      <option value="TRADICIONAL">Tradicional</option>
+      <option value="MODERNO">Moderno</option>
+      <option value="FARMA">Farma</option>
+    </select>
+  </div>
+  <div class="fg"><label>Industria</label>
+    <select id="f-ind" onchange="render()">
+      <option value="all">Todas</option>
+      <option value="HOGAR Y CUIDADO PERSONAL">Hogar y Cuidado Personal</option>
+      <option value="ALIMENTOS Y BEBIDAS">Alimentos y Bebidas</option>
+      <option value="FARMACIA Y SALUD">Farmacia y Salud</option>
+      <option value="FERRETERIA Y CONSTRUCCION">Ferretería y Construcción</option>
+      <option value="MASCOTAS">Mascotas</option>
+      <option value="JUGUETES Y ARTÍCULOS PARA NIÑOS">Juguetes</option>
+      <option value="TABACO">Tabaco</option>
+    </select>
+  </div>
+</div>
+
+<div class="kpis" id="kpi-row"></div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('resumen',this)">Resumen general</button>
+  <button class="tab" onclick="showTab('canales',this)">Canales y subcanales</button>
+  <button class="tab" onclick="showTab('industrias',this)">Industrias</button>
+  <button class="tab" onclick="showTab('paises',this)">Comparativo países</button>
+  <button class="tab" onclick="showTab('alertas',this)">Alertas reales</button>
+</div>
+
+<div id="tab-resumen">
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">PDV por línea de negocio</div>
+      <div style="position:relative;width:100%;height:200px;"><canvas id="c-lineas-pdv" role="img" aria-label="PDV por línea de negocio">PDV por línea.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Productos por línea de negocio</div>
+      <div style="position:relative;width:100%;height:200px;"><canvas id="c-lineas-prod" role="img" aria-label="Productos por línea">Productos por línea.</canvas></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:10px;">
+    <div class="card-title">Distribución de PDV válidos por canal y línea</div>
+    <div style="position:relative;width:100%;height:220px;"><canvas id="c-canal-linea" role="img" aria-label="Canal por línea">Canal por línea.</canvas></div>
+  </div>
+</div>
+
+<div id="tab-canales" style="display:none;">
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title"><span class="tag t-col">Colombia</span> — canales</div>
+      <div style="position:relative;width:100%;height:180px;"><canvas id="c-col-canal" role="img" aria-label="Canales Colombia">Colombia canales.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="tag t-ecu">Ecuador</span> — canales</div>
+      <div style="position:relative;width:100%;height:180px;"><canvas id="c-ecu-canal" role="img" aria-label="Canales Ecuador">Ecuador canales.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="tag t-per">Perú</span> — canales</div>
+      <div style="position:relative;width:100%;height:180px;"><canvas id="c-per-canal" role="img" aria-label="Canales Perú">Perú canales.</canvas></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:10px;">
+    <div class="card-title">Top subcanales — SGI Tradicional Colombia (134,186 PDV válidos)</div>
+    <div id="bars-sub-col"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Top subcanales — SGI 4.0 Colombia (24,788 PDV válidos)</div>
+    <div id="bars-sub-40"></div>
+  </div>
+</div>
+
+<div id="tab-industrias" style="display:none;">
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Industrias por productos — todas las líneas</div>
+      <div style="position:relative;width:100%;height:240px;"><canvas id="c-ind-global" role="img" aria-label="Industrias global">Industrias.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Comparativo industrias por línea</div>
+      <div style="position:relative;width:100%;height:240px;"><canvas id="c-ind-linea" role="img" aria-label="Industrias por línea">Industrias por línea.</canvas></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:10px;">
+    <div class="card-title">Productos por industria — detalle</div>
+    <div id="bars-ind"></div>
+  </div>
+</div>
+
+<div id="tab-paises" style="display:none;">
+  <div class="card" style="margin-bottom:10px;">
+    <div class="card-title">Matriz de presencia — Línea × País</div>
+    <div class="matrix" id="matrix-presencia" style="margin-bottom:8px;min-width:300px;overflow-x:auto;"></div>
+    <div style="display:flex;gap:6px;align-items:center;font-size:10px;color:var(--color-text-secondary);flex-wrap:wrap;margin-top:8px;">
+      <div style="width:12px;height:12px;background:#3B6D11;border-radius:2px;"></div><span>Activo</span>
+      <div style="width:12px;height:12px;background:#FCEBEB;border:0.5px solid #F09595;border-radius:2px;"></div><span>Sin implementar</span>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">PDV por país (SGI Tradicional)</div>
+      <div style="position:relative;width:100%;height:200px;"><canvas id="c-pais-pdv" role="img" aria-label="PDV por país">PDV por país.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Productos por país (SGI Tradicional)</div>
+      <div style="position:relative;width:100%;height:200px;"><canvas id="c-pais-prod" role="img" aria-label="Productos por país">Prod por país.</canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Regiones con mayor concentración de PDV</div>
+    <div id="bars-regiones"></div>
+  </div>
+</div>
+
+<div id="tab-alertas" style="display:none;">
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title" style="color:#A32D2D;"><i class="ti ti-alert-circle" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:3px;"></i>Alertas críticas — datos reales</div>
+      <div class="alert-box danger"><div class="ai"><i class="ti ti-x" aria-hidden="true"></i></div><div><strong>44% de PDV en Perú sin canal asignado</strong> — 12,840 de 28,924 PDV en estado "NO APLICA". Perú tiene el mayor vacío de clasificación del portafolio.</div></div>
+      <div class="alert-box danger"><div class="ai"><i class="ti ti-x" aria-hidden="true"></i></div><div><strong>SGI 4.0 y ME ausentes en Ecuador y Perú</strong> — Dos líneas completas sin implementar en 2 países. Oportunidad de expansión no capturada.</div></div>
+      <div class="alert-box danger"><div class="ai"><i class="ti ti-x" aria-hidden="true"></i></div><div><strong>"Cliente Piloto" con 1,151 productos en Perú</strong> — Más del 55% del catálogo de productos Perú tiene cliente ficticio. Master data incompleto.</div></div>
+      <div class="alert-box danger"><div class="ai"><i class="ti ti-x" aria-hidden="true"></i></div><div><strong>604 productos con "Cliente Prueba EC" en Ecuador</strong> — 10.4% del catálogo Ecuador tiene cliente de prueba activo en producción.</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:#854F0B;"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:3px;"></i>Alertas de atención</div>
+      <div class="alert-box warn"><div class="ai"><i class="ti ti-info-circle" aria-hidden="true"></i></div><div>ME Colombia solo tiene 2,406 PDV vs 134,186 de SGI Tradicional — cobertura del 1.8%. Muy concentrado en canal Moderno (62%).</div></div>
+      <div class="alert-box warn"><div class="ai"><i class="ti ti-info-circle" aria-hidden="true"></i></div><div>Perú SGI Tradicional: Moderno con solo 2,256 PDV vs Tradicional 9,164. Lima concentra el 77% de todos los puntos de venta.</div></div>
+      <div class="alert-box warn"><div class="ai"><i class="ti ti-info-circle" aria-hidden="true"></i></div><div>Ecuador: canal Moderno con solo 2,543 PDV (7.4% del total). Muy por debajo de Colombia (22,389 = 16.6%).</div></div>
+      <div class="alert-box warn"><div class="ai"><i class="ti ti-info-circle" aria-hidden="true"></i></div><div>56 PDV en Colombia con canal "PRUEBA" aún activos en producción. Deben eliminarse del maestro.</div></div>
+      <div class="alert-box warn"><div class="ai"><i class="ti ti-info-circle" aria-hidden="true"></i></div><div>Industria Agropecuaria solo aparece en Ecuador (16 productos). No está en Colombia ni Perú — revisar si es exclusiva o vacío de datos.</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:10px;">
+    <div class="card-title" style="color:#0F6E56;"><i class="ti ti-sparkles" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:3px;"></i>Oportunidades detectadas en los datos reales</div>
+    <div class="alert-box success"><div class="ai"><i class="ti ti-trending-up" aria-hidden="true"></i></div><div><strong>Canal Farma Colombia masivo:</strong> SGI Tradicional tiene 40,406 PDV en Farma (30% del total). SGI 4.0 tiene 7,442. Hay espacio para crecer SGI 4.0 en este canal.</div></div>
+    <div class="alert-box success"><div class="ai"><i class="ti ti-trending-up" aria-hidden="true"></i></div><div><strong>Ecuador Farma subexplotado:</strong> 5,349 PDV Farma en Ecuador con SGI Tradicional pero 0 con SGI 4.0. Alta oportunidad de expansión inmediata.</div></div>
+    <div class="alert-box success"><div class="ai"><i class="ti ti-trending-up" aria-hidden="true"></i></div><div><strong>Farmacia y Salud Ecuador:</strong> 768 productos en este segmento — el más alto de los 3 países. Potencial para profundizar cobertura en canal Farma.</div></div>
+    <div class="alert-box info"><div class="ai"><i class="ti ti-bulb" aria-hidden="true"></i></div><div><strong>ME Colombia muy concentrado:</strong> 611 de 2,406 PDV en Bogotá (25%). Ciudades como Cali (233) y Medellín (228) con espacio de crecimiento importante.</div></div>
+  </div>
+  <div class="card-title" style="margin-bottom:6px;"><i class="ti ti-message-chatbot" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:3px;"></i>Profundizar con IA</div>
+  <button class="ins-btn" onclick="sendPrompt('Con base en los datos reales: Perú tiene 44% de PDV sin canal asignado. ¿Cómo debería priorizar la limpieza y reclasificación de esos 12,840 PDV para maximizar el impacto comercial?')">¿Cómo limpiar los 12,840 PDV sin canal en Perú? <span style="font-size:10px;color:var(--color-text-secondary);">↗</span></button>
+  <button class="ins-btn" onclick="sendPrompt('Ecuador tiene 5,349 PDV en canal Farma con SGI Tradicional pero cero con SGI 4.0. ¿Cuál sería la estrategia para activar SGI 4.0 en Farma Ecuador aprovechando esa base existente?')">Estrategia para activar SGI 4.0 en Farma Ecuador ↗</button>
+  <button class="ins-btn" onclick="sendPrompt('Merchandising Express Colombia solo cubre 2,406 PDV vs los 134,186 de SGI Tradicional. ¿Qué plan de expansión recomendarías para ME en Colombia por región y canal?')">Plan de expansión ME Colombia por región y canal ↗</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const D = matchMedia('(prefers-color-scheme: dark)').matches;
+const tc = D?'#aaa':'#666', gc = D?'rgba(255,255,255,.07)':'rgba(0,0,0,.05)';
+const COLS = ['#185FA5','#1D9E75','#D85A30','#7F77DD','#BA7517','#A32D2D','#0F6E56'];
+const COLSA = COLS.map(c=>c+'bb');
+
+const RAW = {
+  SGI_COL:  {pais:'Colombia', prod:11229, pdv:134186, canales:{TRADICIONAL:71391,MODERNO:22389,FARMA:40406}, ind:{HOGAR:6532,ALIMENTOS:2874,MASCOTAS:687,FERRETERIA:496,TABACO:333,FARMACIA:163,JUGUETES:13}, sub:{TAT:57308,'DROG.IND':28025,'GR.CADENAS':11767,'T.ESP':11345,'DROG.CAD':9527,'AUTOSERV':6203,'DEPOSITOS':2854,'DISCOUNTERS':2632,'MAYORISTAS':2178}},
+  SGI_ECU:  {pais:'Ecuador',  prod:5790,  pdv:34547,  canales:{TRADICIONAL:26655,MODERNO:2543,FARMA:5349},   ind:{HOGAR:3802,ALIMENTOS:987,FARMACIA:768,JUGUETES:185,FERRETERIA:7,AGROPECUARIA:16}, sub:{TAT:24622,'DROG.CAD':3281,'GR.CADENAS':2210,'DROG.IND':1999,'T.ESP':1858,'DISTRIBUIDORES':330,'AUTOSERV':167}},
+  SGI_PER:  {pais:'Perú',     prod:2094,  pdv:12420,  canales:{TRADICIONAL:9164,MODERNO:2256,FARMA:1000},    ind:{HOGAR:1120,ALIMENTOS:340,FARMACIA:243,TABACO:118,FERRETERIA:107,MASCOTAS:111,JUGUETES:39}, sub:{TAT:7115,'GR.CADENAS':2006,'T.ESP':1819,'DROG.IND':501,'DROG.CAD':495,'DEPOSITOS':373,'C&C':51}},
+  SGI40_COL:{pais:'Colombia', prod:5129,  pdv:24788,  canales:{MODERNO:12181,FARMA:7442,TRADICIONAL:5165},   ind:{ALIMENTOS:2531,HOGAR:2032,FERRETERIA:386,FARMACIA:133,MASCOTAS:29}, sub:{'GR.CADENAS':6949,'DROG.IND':4871,'AUTOSERV':4145,'TAT':3313,'DROG.CAD':2435,'T.ESP':1748,'C&C':419,'DISTRIBUIDORES':359,'DISCOUNTERS':230}},
+  ME_COL:   {pais:'Colombia', prod:2863,  pdv:2406,   canales:{MODERNO:1486,TRADICIONAL:560,FARMA:360},      ind:{ALIMENTOS:1375,HOGAR:644,DEPORTE:247,JUGUETES:236,TECNOLOGIA:184,FERRETERIA:76,MASCOTAS:61,FARMACIA:29}, sub:{'GR.CADENAS':869,'TAT':464,'AUTOSERV':341,'DROG.CAD':290,'T.ESP':225,'DISCOUNTERS':53,'C&C':46,'DEPOSITOS':45,'MAYORISTAS':39,'DROG.IND':25}}
+};
+
+function getFiltered(){
+  const fl=document.getElementById('f-linea').value;
+  const fp=document.getElementById('f-pais').value;
+  const fc=document.getElementById('f-canal').value;
+  return Object.entries(RAW).filter(([k,v])=>{
+    const linea = k.startsWith('SGI40')?'SGI40':k.startsWith('ME')?'ME':'SGI';
+    if(fl!=='all'&&linea!==fl) return false;
+    if(fp!=='all'&&v.pais!==fp) return false;
+    return true;
+  });
+}
+
+function sumField(entries, field){
+  return entries.reduce((a,[,v])=>a+(v[field]||0),0);
+}
+
+function render(){
+  const entries = getFiltered();
+  const totalProd = sumField(entries,'prod');
+  const totalPdv = sumField(entries,'pdv');
+  const totalCanal = entries.reduce((a,[,v])=>{
+    Object.entries(v.canales).forEach(([c,n])=>{a[c]=(a[c]||0)+n;});return a;},{}
+  );
+  const totalPdvByCanal = Object.values(totalCanal).reduce((a,b)=>a+b,0);
+
+  document.getElementById('kpi-row').innerHTML = `
+    <div class="kpi"><div class="kpi-l">Total PDV</div><div class="kpi-v">${totalPdv.toLocaleString()}</div><div class="kpi-d">Válidos homologados</div></div>
+    <div class="kpi"><div class="kpi-l">Total productos</div><div class="kpi-v">${totalProd.toLocaleString()}</div><div class="kpi-d">En catálogo activo</div></div>
+    <div class="kpi"><div class="kpi-l">Canal Tradicional</div><div class="kpi-v">${(totalCanal.TRADICIONAL||0).toLocaleString()}</div><div class="kpi-d">${totalPdvByCanal?Math.round((totalCanal.TRADICIONAL||0)/totalPdvByCanal*100):0}% del total</div></div>
+    <div class="kpi"><div class="kpi-l">Canal Moderno</div><div class="kpi-v">${(totalCanal.MODERNO||0).toLocaleString()}</div><div class="kpi-d">${totalPdvByCanal?Math.round((totalCanal.MODERNO||0)/totalPdvByCanal*100):0}% del total</div></div>
+    <div class="kpi"><div class="kpi-l">Canal Farma</div><div class="kpi-v">${(totalCanal.FARMA||0).toLocaleString()}</div><div class="kpi-d">${totalPdvByCanal?Math.round((totalCanal.FARMA||0)/totalPdvByCanal*100):0}% del total</div></div>
+  `;
+}
+
+const charts = {};
+function mkC(id,type,labels,datasets,opts){
+  if(charts[id]) charts[id].destroy();
+  const el=document.getElementById(id); if(!el)return;
+  charts[id]=new Chart(el,{type,data:{labels,datasets},options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}},opts||{})});
+}
+
+// Resumen
+mkC('c-lineas-pdv','bar',
+  ['SGI Trad. COL','SGI Trad. ECU','SGI Trad. PER','SGI 4.0 COL','ME COL'],
+  [{data:[134186,34547,12420,24788,2406],backgroundColor:['#185FA5bb','#1D9E75bb','#7F77DDbb','#D85A30bb','#BA7517bb']}],
+  {scales:{x:{ticks:{color:tc,font:{size:9}}},y:{ticks:{color:tc,font:{size:9},callback:v=>v>=1000?Math.round(v/1000)+'k':v},grid:{color:gc}}}}
+);
+mkC('c-lineas-prod','bar',
+  ['SGI Trad. COL','SGI Trad. ECU','SGI Trad. PER','SGI 4.0 COL','ME COL'],
+  [{data:[11229,5790,2094,5129,2863],backgroundColor:['#185FA5bb','#1D9E75bb','#7F77DDbb','#D85A30bb','#BA7517bb']}],
+  {scales:{x:{ticks:{color:tc,font:{size:9}}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+);
+mkC('c-canal-linea','bar',
+  ['SGI Trad. COL','SGI Trad. ECU','SGI Trad. PER','SGI 4.0 COL','ME COL'],
+  [
+    {label:'Tradicional',data:[71391,26655,9164,5165,560],backgroundColor:'#185FA5bb'},
+    {label:'Moderno',    data:[22389,2543,2256,12181,1486],backgroundColor:'#1D9E75bb'},
+    {label:'Farma',      data:[40406,5349,1000,7442,360],backgroundColor:'#D85A30bb'}
+  ],
+  {plugins:{legend:{display:true,labels:{color:tc,font:{size:10},boxWidth:10}}},scales:{x:{stacked:true,ticks:{color:tc,font:{size:9}}},y:{stacked:true,ticks:{color:tc,font:{size:9},callback:v=>v>=1000?Math.round(v/1000)+'k':v},grid:{color:gc}}}}
+);
+
+// Canales por país
+function doPie(id,data,labels){
+  mkC(id,'doughnut',labels,[{data,backgroundColor:COLS.slice(0,labels.length)}],
+    {plugins:{legend:{display:true,position:'bottom',labels:{color:tc,font:{size:9},boxWidth:8}}}}
+  );
+}
+// Colombia = SGI + SGI40 + ME
+const colT=(71391+5165+560), colM=(22389+12181+1486), colF=(40406+7442+360);
+doPie('c-col-canal',[colT,colM,colF],['Tradicional','Moderno','Farma']);
+doPie('c-ecu-canal',[26655,2543,5349],['Tradicional','Moderno','Farma']);
+doPie('c-per-canal',[9164,2256,1000],['Tradicional','Moderno','Farma']);
+
+// Subcanales bars
+function doBars(cid, obj, color){
+  const el=document.getElementById(cid); if(!el)return;
+  const max=Math.max(...Object.values(obj));
+  el.innerHTML=Object.entries(obj).map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-lbl">${k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/max*100)}%;background:${color};"></div></div>
+      <div class="bar-n">${v>=1000?(v/1000).toFixed(1)+'k':v}</div>
+    </div>`).join('');
+}
+doBars('bars-sub-col',RAW.SGI_COL.sub,'#185FA5');
+doBars('bars-sub-40',RAW.SGI40_COL.sub,'#D85A30');
+
+// Industrias
+const indLabels=['Hogar y C.P.','Alimentos','Farmacia','Ferretería','Mascotas','Tabaco','Juguetes','Deporte','Tecnología','Agropecuaria'];
+const indKeys=  ['HOGAR','ALIMENTOS','FARMACIA','FERRETERIA','MASCOTAS','TABACO','JUGUETES','DEPORTE','TECNOLOGIA','AGROPECUARIA'];
+const indGlobal=indKeys.map(k=>Object.values(RAW).reduce((a,v)=>a+(v.ind[k]||0),0));
+mkC('c-ind-global','doughnut',indLabels.filter((_,i)=>indGlobal[i]>0),
+  [{data:indGlobal.filter(v=>v>0),backgroundColor:COLS}],
+  {plugins:{legend:{display:true,position:'bottom',labels:{color:tc,font:{size:9},boxWidth:8}}}}
+);
+mkC('c-ind-linea','bar',indLabels.slice(0,6),
+  [
+    {label:'SGI Trad.',data:indKeys.slice(0,6).map(k=>['SGI_COL','SGI_ECU','SGI_PER'].reduce((a,id)=>a+(RAW[id].ind[k]||0),0)),backgroundColor:'#185FA5bb'},
+    {label:'SGI 4.0', data:indKeys.slice(0,6).map(k=>RAW.SGI40_COL.ind[k]||0),backgroundColor:'#D85A30bb'},
+    {label:'ME',       data:indKeys.slice(0,6).map(k=>RAW.ME_COL.ind[k]||0),backgroundColor:'#1D9E75bb'}
+  ],
+  {plugins:{legend:{display:true,labels:{color:tc,font:{size:10},boxWidth:8}}},scales:{x:{ticks:{color:tc,font:{size:9}}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+);
+const indEl=document.getElementById('bars-ind');
+const indSorted=indKeys.map((k,i)=>([indLabels[i],indGlobal[i]])).sort((a,b)=>b[1]-a[1]).filter(x=>x[1]>0);
+const indMax=indSorted[0][1];
+indEl.innerHTML=indSorted.map(([l,v])=>`
+  <div class="bar-row">
+    <div class="bar-lbl">${l}</div>
+    <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/indMax*100)}%;background:#185FA5;"></div></div>
+    <div class="bar-n">${v.toLocaleString()}</div>
+  </div>`).join('');
+
+// Países
+mkC('c-pais-pdv','bar',['Colombia','Ecuador','Perú'],
+  [{data:[134186,34547,12420],backgroundColor:['#185FA5bb','#1D9E75bb','#7F77DDbb']}],
+  {scales:{x:{ticks:{color:tc,font:{size:10}}},y:{ticks:{color:tc,font:{size:9},callback:v=>Math.round(v/1000)+'k'},grid:{color:gc}}}}
+);
+mkC('c-pais-prod','bar',['Colombia','Ecuador','Perú'],
+  [{data:[11229,5790,2094],backgroundColor:['#185FA5bb','#1D9E75bb','#7F77DDbb']}],
+  {scales:{x:{ticks:{color:tc,font:{size:10}}},y:{ticks:{color:tc,font:{size:9}},grid:{color:gc}}}}
+);
+
+// Matriz de presencia
+const mp=document.getElementById('matrix-presencia');
+const lineas=[['SGI Tradicional','SGI_COL','SGI_ECU','SGI_PER'],['SGI 4.0','SGI40_COL',null,null],['Merchandising Express','ME_COL',null,null]];
+mp.innerHTML='<div class="mc mh"></div><div class="mc mh">Colombia</div><div class="mc mh">Ecuador</div><div class="mc mh">Perú</div>';
+lineas.forEach(([lbl,...keys])=>{
+  mp.innerHTML+=`<div class="mc ml">${lbl}</div>`;
+  keys.forEach(k=>{
+    if(k){
+      const d=RAW[k];
+      mp.innerHTML+=`<div class="mc" style="background:#3B6D11;color:#EAF3DE;font-size:10px;">${d.pdv.toLocaleString()}<br>PDV</div>`;
+    } else {
+      mp.innerHTML+=`<div class="mc" style="background:#FCEBEB;color:#A32D2D;font-size:10px;">Sin implementar</div>`;
+    }
+  });
+});
+
+// Regiones bars
+const regData={'Bogotá':(36174+6954+611),'Costa':(24855+3765+464),'Antioquia':(19872+3487+361),'Centro':(22219+4659+386),'Occidente':(18284+3428+411),'Oriente/Sur':(13682+2939+162)};
+const regMax=Math.max(...Object.values(regData));
+document.getElementById('bars-regiones').innerHTML=Object.entries(regData).sort((a,b)=>b[1]-a[1]).map(([l,v])=>`
+  <div class="bar-row">
+    <div class="bar-lbl">${l}</div>
+    <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/regMax*100)}%;background:#185FA5;"></div></div>
+    <div class="bar-n">${(v/1000).toFixed(1)}k</div>
+  </div>`).join('');
+
+render();
+
+function showTab(name,btn){
+  ['resumen','canales','industrias','paises','alertas'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===name?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
